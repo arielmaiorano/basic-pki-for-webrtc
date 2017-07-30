@@ -1,0 +1,17 @@
+
+
+# llave privada (y pub)
+openssl genrsa -out rootCA.key 2048
+
+# auto-firma
+openssl req -x509 -new -nodes -key rootCA.key -days 3600 -out rootCA.pem
+
+# generar nuevo cert, pedir firma y firmar
+openssl genrsa -out device.key 2048
+openssl req -new -key device.key -out device.csr
+openssl x509 -req -in device.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out device.crt -days 360
+
+#verificar firma
+openssl verify -verbose -CAfile rootCA.pem device.crt
+
+
